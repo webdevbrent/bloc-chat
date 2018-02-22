@@ -20,8 +20,8 @@ class RoomList extends Component {
         return (
             <div>
                 {/* Get all rooms */}
-                {this.state.rooms.map((rooms) => {
-                    return rooms;
+                {this.state.rooms.map((room) => {
+                    return room;
                 })}
                 <h1>{this.state.rooms}</h1>
             </div>

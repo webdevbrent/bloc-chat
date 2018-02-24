@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import * as firebase from 'firebase';
+import { Row, Col, ListGroup, ListGroupItem } from 'reactstrap';
 import './App.css';
 import RoomList from './components/RoomList';
 
@@ -18,7 +19,16 @@ class App extends Component {
   render() {
     return (
       <div className="container-fluid">
-        <RoomList firebase ={firebase} />
+      <Row>
+          <Col xs="3">
+          <ListGroup>
+            <ListGroupItem>
+              <RoomList
+              firebase ={ firebase } />
+            </ListGroupItem>
+          </ListGroup>
+          </Col>
+      </Row>
       </div>
     );
   }

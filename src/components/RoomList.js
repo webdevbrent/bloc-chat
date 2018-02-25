@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, FormGroup, Label, Input } from 'reactstrap';
+import { Button, FormGroup, Input } from 'reactstrap';
 
 class RoomList extends Component {
   constructor(props) {
@@ -14,16 +14,13 @@ class RoomList extends Component {
   }
 
   handleChange(e) {
-    // e.preventDefault();
     this.setState({ name: e.target.value });
-    console.log("Die React!!!");
   }
 
   createRoom(e) {
     e.preventDefault();
     this.roomsRef.push({name: this.state.name});
     this.setState({ name: "" });
-    e.target.name = "";
   }
 
   componentDidMount() {
@@ -39,7 +36,6 @@ class RoomList extends Component {
     });
   }
 
-
   render() {
 
     const roomForm = (
@@ -51,14 +47,12 @@ class RoomList extends Component {
       </form>
     );
 
-
     const roomList = this.state.rooms.map((room, index) =>  
     
-          <li key={index}>{room.name}</li> 
+          <li key={index}>{room.name} {room.id}</li> 
   
     );
     console.log(roomList);
-
 
     return (
       <div>

@@ -14,12 +14,8 @@ class App extends Component {
     this.activeRoom = this.activeRoom.bind(this);
   }
 
-  activeRoom(room){
-    const messageRef = firebase.database().ref("rooms");
-    const roomKey = room.key;
-    const roomName = room.name;
-    messageRef.update({currentRoom: roomKey, roomName: roomName});
-    this.setState({ activeRoom: room });
+  activeRoom(room) {
+    this.setState({activeRoom: room});
   }
   
   render() {
@@ -27,6 +23,7 @@ class App extends Component {
       <div className="container-fluid">
       <Row>
           <Col xs="3">
+          <h1> Bloc Chat </h1>
           <ListGroup>
             <ListGroupItem>
               <RoomList
@@ -36,6 +33,7 @@ class App extends Component {
           </ListGroup>
           </Col>
           <Col xs="9">
+          <h1>{this.state.activeRoom.name ||'Select room'}</h1>
             <MessageList 
             firebase = { firebase }
             activeRoom={this.activeRoom.key} />

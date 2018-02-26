@@ -49,7 +49,7 @@ class RoomList extends Component {
 
     const roomList = this.state.rooms.map((room, index) =>  
     
-          <li key={index}>{room.name} {room.id}</li> 
+          <li key={index}>{room.name}</li> 
   
     );
     console.log(roomList);
@@ -67,9 +67,6 @@ class RoomList extends Component {
       </div>
     );
   }
-
-
-
 
 } 
 

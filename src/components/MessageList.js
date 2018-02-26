@@ -4,10 +4,10 @@ import { Button, FormGroup, Input } from 'reactstrap';
 class MessageList extends Component {
     constructor(props) {
         super(props);
-        this.state = {username: "Guest", content: "", sentAt: "", messages: []};
+        this.state = {username: "Guest", content: "", sentAt: "", RoomId:"", messages:[] };
         this.handleChange = this.handleChange.bind(this);
         this.createMessage = this.createMessage.bind(this);
-        this.messagesRef = this.props.firebase.database().ref('messages');  
+        this.messageRef = this.props.firebase.database().ref("messages/" + this.props.activeRoom);  
     }
 
     handleChange(e) {
@@ -18,32 +18,52 @@ class MessageList extends Component {
         });
       }
 
-      createMessage(e) {
+      createMessage(e){
         e.preventDefault();
-          this.messagesRef.push({
-            username: this.state.username,
-            content: this.state.content,
-            sentAt: this.state.sentAt
-          });
-          this.setState({ content: "", sentAt: ""});
-      }
+         this.messageRef.push({
+          username: this.state.username,
+          content: this.state.content,
+          sentAt: this.state.sentAt,
+          RoomId: this.state.RoomId
+        });
+        this.setState({ username: "", content: "", sentAt: "",RoomId:""});
+       }
+
+    //   createMessage(e) {
+    //     e.preventDefault();
+    //       this.messagesRef.push({
+    //         username: this.state.username,
+    //         content: this.state.content,
+    //         sentAt: this.state.sentAt,
+    //         roomId: this.state.roomId
+    //       });
+    //       this.setState({ username: "", content: "", sentAt: "",RoomId:""});
+    //   }
+
+    // componentDidMount() {
+    //     this.messagesRef.on('value', snapshot => {
+    //         const newMessages = [];
+    //         snapshot.forEach((message) => {
+    //             newMessages.push({
+    //                 id: message.key,
+    //                 username: message.val().username,
+    //                 content: message.val().content,
+    //                 sentAt: message.val().sentAt,
+    //                 roomId: message.key
+    //             });
+    //             console.log(newMessages);
+    //         });
+    //         this.setState({messages: newMessages});
+    //     });
+    //   }
 
     componentDidMount() {
-        this.messagesRef.on('value', snapshot => {
-            const newMessages = [];
-            snapshot.forEach((message) => {
-                newMessages.push({
-                    id: message.key,
-                    username: message.val().username,
-                    content: message.val().content,
-                    sentAt: message.val().sentAt,
-                    roomId: message.key
-                });
-                console.log(newMessages);
-            });
-            this.setState({messages: newMessages});
+        this.messageRef.on('child_added', snapshot => {
+        const message = snapshot.val();
+        message.key = snapshot.key;
+        this.setState({ messages: this.state.messages.concat(message) })
         });
-      }
+       }
 
     render() {
         const messageBar = (

@@ -4,68 +4,44 @@ import { Button, FormGroup, Input } from 'reactstrap';
 class MessageList extends Component {
     constructor(props) {
         super(props);
-        this.state = {username: "Guest", content: "", sentAt: "", RoomId:"", messages:[] };
+        this.state = {username: "", content: "", sentAt: "", roomId: "", messages: []};
         this.handleChange = this.handleChange.bind(this);
         this.createMessage = this.createMessage.bind(this);
-        this.messageRef = this.props.firebase.database().ref("messages/" + this.props.activeRoom);  
+        this.messagesRef = this.props.firebase.database().ref("messages");  
     }
 
     handleChange(e) {
         e.preventDefault();
         this.setState({
+          username: "user",
           content: e.target.value,
-          sentAt: this.props.firebase.database.ServerValue.TIMESTAMP
+          sentAt: this.props.firebase.database.ServerValue.TIMESTAMP,
+          roomId: this.props.activeRoom
         });
       }
 
-      createMessage(e){
+      createMessage(e) {
         e.preventDefault();
-         this.messageRef.push({
+        this.messagesRef.push({
           username: this.state.username,
           content: this.state.content,
           sentAt: this.state.sentAt,
-          RoomId: this.state.RoomId
+          roomId: this.state.roomId
         });
-        this.setState({ username: "", content: "", sentAt: "",RoomId:""});
-       }
-
-    //   createMessage(e) {
-    //     e.preventDefault();
-    //       this.messagesRef.push({
-    //         username: this.state.username,
-    //         content: this.state.content,
-    //         sentAt: this.state.sentAt,
-    //         roomId: this.state.roomId
-    //       });
-    //       this.setState({ username: "", content: "", sentAt: "",RoomId:""});
-    //   }
-
-    // componentDidMount() {
-    //     this.messagesRef.on('value', snapshot => {
-    //         const newMessages = [];
-    //         snapshot.forEach((message) => {
-    //             newMessages.push({
-    //                 id: message.key,
-    //                 username: message.val().username,
-    //                 content: message.val().content,
-    //                 sentAt: message.val().sentAt,
-    //                 roomId: message.key
-    //             });
-    //             console.log(newMessages);
-    //         });
-    //         this.setState({messages: newMessages});
-    //     });
-    //   }
+        this.setState({ username: "", content: "", sentAt: "", roomId: "" });
+      }
 
     componentDidMount() {
-        this.messageRef.on('child_added', snapshot => {
-        const message = snapshot.val();
-        message.key = snapshot.key;
-        this.setState({ messages: this.state.messages.concat(message) })
+        this.messagesRef.on('child_added', snapshot => {
+            const message = snapshot.val();
+            message.key = snapshot.key;
+            this.setState({ messages: this.state.messages.concat(message) });
         });
-       }
+    }
 
     render() {
+        const activeRoom = this.props.activeRoom;
+
         const messageBar = (
             <form onSubmit={this.createMessage}>
                 <FormGroup>
@@ -80,15 +56,14 @@ class MessageList extends Component {
             </form>
         );
 
-        const messageList = this.state.messages.map((message, index) =>
-                <li key={index}>
-                    <p>Message Key {message.id}</p>
-                    <p>Username: {message.username}</p>
-                    <p>Message: {message.content}</p>
-                    <p>Time Sent: {message.sentAt}</p>
-                    <p>Room Id: {message.roomId}</p>
-                </li>
-            );
+        const messageList = (
+            this.state.messages.map((message) => {
+              if (message.roomId === activeRoom) {
+                return <li key={message.key}>{message.content}</li>
+              }
+              return null;
+            })
+          );
 
         return (
             <div>
@@ -104,4 +79,3 @@ class MessageList extends Component {
 }
 
 export default MessageList;
-

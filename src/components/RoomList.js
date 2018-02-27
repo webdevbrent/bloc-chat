@@ -24,16 +24,15 @@ class RoomList extends Component {
   }
 
   componentDidMount() {
-    this.roomsRef.on('value', snapshot => {
-      const roomChanges = [];
-      snapshot.forEach((room) => {
-        roomChanges.push({
-          name: room.child("name").val(),
-          id: room.key
-        });
-      });
-      this.setState({ rooms: roomChanges});
+    this.roomsRef.on('child_added', snapshot => {
+      const room = snapshot.val();
+      room.key = snapshot.key;
+      this.setState({ rooms: this.state.rooms.concat(room)});
     });
+  }
+
+  selectRoom(room) {
+    this.props.activeRoom(room);
   }
 
   render() {
@@ -47,12 +46,11 @@ class RoomList extends Component {
       </form>
     );
 
-    const roomList = this.state.rooms.map((room, index) =>  
+    const roomList = this.state.rooms.map((room) =>  
     
-          <li key={index}>{room.name}</li> 
+          <li key={room.key} onClick={(e) => this.selectRoom(room, e)}>{room.name}</li> 
   
     );
-    console.log(roomList);
 
     return (
       <div>

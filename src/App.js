@@ -1,11 +1,19 @@
 import React, { Component } from 'react';
 import * as firebase from 'firebase';
-import config from './Config';
 import { Row, Col, ListGroup, ListGroupItem } from 'reactstrap';
 import './App.css';
 import RoomList from './components/RoomList';
 import MessageList from './components/MessageList';
 
+const config = {
+  apiKey: 'AIzaSyDsoA329VlopARaLKn9oWCPLS_77CcSec8',
+  authDomain: 'bloc-chat-8f25f.firebaseapp.com',
+  databaseURL: 'https://bloc-chat-8f25f.firebaseio.com',
+  projectId: 'bloc-chat-8f25f',
+  storageBucket: 'bloc-chat-8f25f.appspot.com',
+  messagingSenderId: '1068372700222',
+};
+firebase.initializeApp(config);
 
 class App extends Component {
   constructor(props) {
@@ -28,7 +36,8 @@ class App extends Component {
             <ListGroupItem>
               <RoomList
               firebase = { firebase }
-              activeRoom={this.activeRoom} />
+              activeRoom={ this.activeRoom }
+               />
             </ListGroupItem>
           </ListGroup>
           </Col>
@@ -36,7 +45,8 @@ class App extends Component {
           <h1>{this.state.activeRoom.name ||'Select room'}</h1>
             <MessageList 
             firebase = { firebase }
-            activeRoom={this.activeRoom.key} />
+            activeRoom={ this.state.activeRoom.key }
+            />
           </Col>
       </Row>
       </div>

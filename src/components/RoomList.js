@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, FormGroup, Label, Input } from 'reactstrap';
+import { Button, FormGroup, Input } from 'reactstrap';
 
 class RoomList extends Component {
   constructor(props) {
@@ -14,31 +14,26 @@ class RoomList extends Component {
   }
 
   handleChange(e) {
-    // e.preventDefault();
     this.setState({ name: e.target.value });
-    console.log("Die React!!!");
   }
 
   createRoom(e) {
     e.preventDefault();
     this.roomsRef.push({name: this.state.name});
     this.setState({ name: "" });
-    e.target.name = "";
   }
 
   componentDidMount() {
-    this.roomsRef.on('value', snapshot => {
-      const roomChanges = [];
-      snapshot.forEach((room) => {
-        roomChanges.push({
-          name: room.child("name").val(),
-          id: room.key
-        });
-      });
-      this.setState({ rooms: roomChanges});
+    this.roomsRef.on('child_added', snapshot => {
+      const room = snapshot.val();
+      room.key = snapshot.key;
+      this.setState({ rooms: this.state.rooms.concat(room)});
     });
   }
 
+  selectRoom(room) {
+    this.props.activeRoom(room);
+  }
 
   render() {
 
@@ -51,14 +46,11 @@ class RoomList extends Component {
       </form>
     );
 
-
-    const roomList = this.state.rooms.map((room, index) =>  
+    const roomList = this.state.rooms.map((room) =>  
     
-          <li key={index}>{room.name}</li> 
+          <li key={room.key} onClick={(e) => this.selectRoom(room, e)}>{room.name}</li> 
   
     );
-    console.log(roomList);
-
 
     return (
       <div>
@@ -73,9 +65,6 @@ class RoomList extends Component {
       </div>
     );
   }
-
-
-
 
 } 
 

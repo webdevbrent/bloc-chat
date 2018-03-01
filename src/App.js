@@ -27,6 +27,8 @@ class App extends Component {
   }
   
   render() {
+    const showMessages = this.state.activeRoom;
+
     return (
       <div className="container-fluid">
       <Row>
@@ -43,10 +45,13 @@ class App extends Component {
           </Col>
           <Col xs="9">
           <h1>{this.state.activeRoom.name ||'Select room'}</h1>
-            <MessageList 
-            firebase = { firebase }
-            activeRoom={ this.state.activeRoom.key }
-            />
+          { showMessages ? 
+            (<MessageList 
+              firebase = { firebase }
+              activeRoom={ this.state.activeRoom.key }
+              />)
+            : (null)
+          }
           </Col>
       </Row>
       </div>

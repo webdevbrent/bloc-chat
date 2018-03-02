@@ -1,39 +1,40 @@
 import React, { Component } from 'react';
-import * as firebase from 'firebase';
+import firebase from './firebase';
 import { Row, Col, ListGroup, ListGroupItem } from 'reactstrap';
 import './App.css';
 import RoomList from './components/RoomList';
 import MessageList from './components/MessageList';
+import User from './components/User';
 
-const config = {
-  apiKey: 'AIzaSyDsoA329VlopARaLKn9oWCPLS_77CcSec8',
-  authDomain: 'bloc-chat-8f25f.firebaseapp.com',
-  databaseURL: 'https://bloc-chat-8f25f.firebaseio.com',
-  projectId: 'bloc-chat-8f25f',
-  storageBucket: 'bloc-chat-8f25f.appspot.com',
-  messagingSenderId: '1068372700222',
-};
-firebase.initializeApp(config);
+
+
 
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = {activeRoom: ""};
+    this.state = {activeRoom: "", user: null};
     this.activeRoom = this.activeRoom.bind(this);
+    this.setUser = this.setUser.bind(this);
   }
 
   activeRoom(room) {
     this.setState({activeRoom: room});
   }
-  
+
+  setUser(user) {
+    this.setState({ user: user });
+  }
+
   render() {
+
     const showMessages = this.state.activeRoom;
+    const currentUser = this.state.user === null ? "Guest" : this.state.user.displayName;
 
     return (
       <div className="container-fluid">
       <Row>
           <Col xs="3">
-          <h1> Bloc Chat </h1>
+          <h1 className="text-center text-uppercase font-weight-bold text-primary"> Let's Chat </h1>
           <ListGroup>
             <ListGroupItem>
               <RoomList
@@ -41,16 +42,20 @@ class App extends Component {
               activeRoom={ this.activeRoom }
                />
             </ListGroupItem>
+            <ListGroupItem>
+              <User firebase={ firebase } setUser={ this.setUser } welcome={ currentUser } />
+            </ListGroupItem>
           </ListGroup>
           </Col>
           <Col xs="9">
-          <h1>{this.state.activeRoom.name ||'Select room'}</h1>
+          <h1>{this.state.activeRoom.name ||'Please, Select a room'}</h1>
           { showMessages ? 
-            (<MessageList 
+            <MessageList 
               firebase = { firebase }
               activeRoom={ this.state.activeRoom.key }
-              />)
-            : (null)
+              user = { this.state.user ? this.state.user.displayName : "Not Willing To Login"}
+              />
+            : null
           }
           </Col>
       </Row>

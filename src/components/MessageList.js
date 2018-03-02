@@ -13,7 +13,7 @@ class MessageList extends Component {
     handleChange(e) {
         e.preventDefault();
         this.setState({
-          username: "user",
+          username: this.props.user,
           content: e.target.value,
           sentAt: this.props.firebase.database.ServerValue.TIMESTAMP,
           roomId: this.props.activeRoom
@@ -59,7 +59,11 @@ class MessageList extends Component {
         const messageList = (
             this.state.messages.map((message) => {
               if (message.roomId === activeRoom) {
-                return <li key={message.key}>{message.content}</li>
+                return <li className="list-group-item list-group-item-warning" 
+                       key={message.key}>
+                       <span className="font-weight-bold text-primary">{message.username}: </span>
+                       <span className="text-light bg-dark">{message.content}</span>
+                       </li>
               }
               return null;
             })
@@ -68,7 +72,7 @@ class MessageList extends Component {
         return (
             <div>
                 <div>
-                    <ul>{messageList}</ul>
+                    <ul className="list-group">{messageList}</ul>
                 </div>
                 <div>
                     {messageBar}

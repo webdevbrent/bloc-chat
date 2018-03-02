@@ -6,11 +6,17 @@ class RoomList extends Component {
     super(props);
     this.state = {
       rooms: [],
-      name: ""
+      name: "",
+      isVisible: false
     };
     this.handleChange = this.handleChange.bind(this);
     this.createRoom = this.createRoom.bind(this);
     this.roomsRef = this.props.firebase.database().ref('rooms');
+    this.toggleRoomForm = this.toggleRoomForm.bind(this);
+  }
+
+  toggleRoomForm(){
+    this.setState({ isVisible: !this.state.isVisible })
   }
 
   handleChange(e) {
@@ -38,24 +44,32 @@ class RoomList extends Component {
   render() {
 
     const roomForm = (
+      
       <form onSubmit={ (e) => this.createRoom(e)}>
         <FormGroup>
+        {
+          this.state.isVisible &&
           <Input type="text" name="name" value={this.state.name} placeholder="Add a Room.." onChange={ (e) => this.handleChange(e) } />
-          <Button>Add Room</Button>
+        }
+        <Button className="btn btn-block btn-success" onClick={this.toggleRoomForm}>Add Room</Button>
         </FormGroup>
       </form>
+
     );
 
     const roomList = this.state.rooms.map((room) =>  
     
-          <li key={room.key} onClick={(e) => this.selectRoom(room, e)}>{room.name}</li> 
+          <li className="list-group-item list-group-item-success" 
+              key={room.key} 
+              onClick={(e) => this.selectRoom(room, e)}>{room.name}
+          </li> 
   
     );
 
     return (
       <div>
         <div>
-          <ul>
+          <ul className="list-group">
             {roomList}
           </ul>
         </div>

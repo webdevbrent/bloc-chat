@@ -59,10 +59,10 @@ class MessageList extends Component {
         const messageList = (
             this.state.messages.map((message) => {
               if (message.roomId === activeRoom) {
-                return <li className="list-group-item list-group-item-warning" 
+                return <li className="list-group-item" 
                        key={message.key}>
                        <span className="font-weight-bold text-primary">{message.username}: </span>
-                       <span className="text-light bg-dark">{message.content}</span>
+                       <span className="font-weight-bold">{message.content}</span>
                        </li>
               }
               return null;

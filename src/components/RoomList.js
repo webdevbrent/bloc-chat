@@ -24,11 +24,22 @@ class RoomList extends Component {
     this.setState({ name: "" });
   }
 
+  deleteRoom(roomKey) {
+    let room = this.props.firebase.database().ref("rooms/" + roomKey);
+    console.log(room);
+    room.remove();
+  }
+
   componentDidMount() {
-    this.roomsRef.on('child_added', snapshot => {
-      const room = snapshot.val();
-      room.key = snapshot.key;
-      this.setState({ rooms: this.state.rooms.concat(room)});
+    this.roomsRef.on('value', snapshot => {
+      let roomChanges = [];
+      snapshot.forEach((room) => {
+        roomChanges.push({
+          key: room.key,
+          name: room.val().name
+        });
+      });
+      this.setState({ rooms: roomChanges})
     });
   }
 
@@ -54,6 +65,7 @@ class RoomList extends Component {
           <li className="list-group-item list-group-item-success" 
               key={room.key} 
               onClick={(e) => this.selectRoom(room, e)}>{room.name}
+              <button className="btn btn-danger float-right" onClick={() => this.deleteRoom(room.key)}>Remove</button>
           </li> 
   
     );
